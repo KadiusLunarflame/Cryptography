@@ -11,7 +11,7 @@
 #include <iostream>
 
 class KHAZAD {
-  private:
+  public:
     using byte = uint8_t;
     using block = uint64_t;
     const byte BlockSize = 8;
@@ -552,7 +552,7 @@ class KHAZAD {
             0x577a3698d41b4ccf, 0x498279eb10b2fba2, 0xa7e97427ba3a9d80, 0xf09342bf6e21d14f,
             0x5dd9f842637c211f, 0x4c5d1e86c50f43ca, 0x71da39db3892e3aa, 0xd3ec2a915715c642,
     };
-
+public:
     const uint64_t c[R + 1] = {
             0xba542f7453d3d24d,
             0x50ac8dbf70529a4c,
@@ -565,44 +565,73 @@ class KHAZAD {
             0xf726ffede89d6f8e,
     };
 
+    uint8_t Sbox_[256] =
+            {0xba, 0x54, 0x2f, 0x74, 0x53, 0xd3, 0xd2, 0x4d, 0x50, 0xac, 0x8d, 0xbf, 0x70, 0x52, 0x9a, 0x4c,
+             0xea, 0xd5, 0x97, 0xd1, 0x33, 0x51, 0x5b, 0xa6, 0xde, 0x48, 0xa8, 0x99, 0xdb, 0x32, 0xb7, 0xfc,
+             0xe3, 0x9e, 0x91, 0x9b, 0xe2, 0xbb, 0x41, 0x6e, 0xa5, 0xcb, 0x6b, 0x95, 0xa1, 0xf3, 0xb1, 0x02,
+             0xcc, 0xc4, 0x1d, 0x14, 0xc3, 0x63, 0xda, 0x5d, 0x5f, 0xdc, 0x7d, 0xcd, 0x7f, 0x5a, 0x6c, 0x5c,
+             0xf7, 0x26, 0xff, 0xed, 0xe8, 0x9d, 0x6f, 0x8e, 0x19, 0xa0, 0xf0, 0x89, 0x0f, 0x07, 0xaf, 0xfb,
+             0x08, 0x15, 0x0d, 0x04, 0x01, 0x64, 0xdf, 0x76, 0x79, 0xdd, 0x3d, 0x16, 0x3f, 0x37, 0x6d, 0x38,
+             0xb9, 0x73, 0xe9, 0x35, 0x55, 0x71, 0x7b, 0x8c, 0x72, 0x88, 0xf6, 0x2a, 0x3e, 0x5e, 0x27, 0x46,
+             0x0c, 0x65, 0x68, 0x61, 0x03, 0xc1, 0x57, 0xd6, 0xd9, 0x58, 0xd8, 0x66, 0xd7, 0x3a, 0xc8, 0x3c,
+             0xFA,0x96,0xA7,0x98,0xEC,0xB8,0xC7,0xAE,0x69,0x4B,0xAB,0xA9,0x67,0x0A,0x47,0xF2,
+             0xB5,0x22,0xE5,0xEE,0xBE,0x2B,0x81,0x12,0x83,0x1B,0x0E,0x23,0xF5,0x45,0x21,0xCE,
+             0x49,0x2C,0xF9,0xE6,0xB6,0x28,0x17,0x82,0x1A,0x8B,0xFE,0x8A,0x09,0xC9,0x87,0x4E,
+             0xE1,0x2E,0xE4,0xE0,0xEB,0x90,0xA4,0x1E,0x85,0x60,0x00,0x25,0xF4,0xF1,0x94,0x0B,
+             0xE7,0x75,0xEF,0x34,0x31,0xD4,0xD0,0x86,0x7E,0xAD,0xFD,0x29,0x30,0x3B,0x9F,0xF8,
+             0xC6,0x13,0x06,0x05,0xC5,0x11,0x77,0x7C,0x7A,0x78,0x36,0x1C,0x39,0x59,0x18,0x56,
+             0xB3,0xB0,0x24,0x20,0xB2,0x92,0xA3,0xC0,0x44,0x62,0x10,0xB4,0x84,0x43,0x93,0xC2,
+             0x4A,0xBD,0x8F,0x2D,0xBC,0x9C,0x6A,0x40,0xCF,0xA2,0x80,0x4F,0x1F,0xCA,0xAA,0x42,
+            };
+
+    uint8_t H[8][8] = {
+            {0x01,0x03,0x04,0x05,0x06,0x08,0x0b,0x07},
+            {0x03,0x01,0x05,0x04,0x08,0x06,0x07,0x0b},
+            {0x04,0x05,0x01,0x03,0x0b,0x07,0x06,0x08},
+            {0x05,0x04,0x03,0x01,0x07,0x0b,0x08,0x06},
+            {0x06,0x08,0x0b,0x07,0x01,0x03,0x04,0x05},
+            {0x08,0x06,0x07,0x0b,0x03,0x01,0x05,0x04},
+            {0x0b,0x07,0x06,0x08,0x04,0x05,0x01,0x03},
+            {0x07,0x0b,0x08,0x06,0x05,0x04,0x03,0x01},
+    };
 
     uint64_t T(uint64_t block) {
         return T0[(byte)(block >> 56)]^T1[(byte)(block >> 48)]^T2[(byte)(block >> 40)]^T3[(byte)(block >> 32)]^T4[(byte)(block >> 24)]^T5[(byte)(block >> 16)]^T6[(byte)(block >> 8)]^T7[(byte)(block >> 0)];
     }
 
 public:
-    template<typename BlockType, typename MasterKeyType>
-    KHAZAD(const BlockType& block, const MasterKeyType& key) {
-        state_ = ((uint64_t)block[0] << 56)^
-                 ((uint64_t)block[1] << 48)^
-                 ((uint64_t)block[2] << 40)^
-                 ((uint64_t)block[3] << 32)^
-                 ((uint64_t)block[4] << 24)^
-                 ((uint64_t)block[5] << 16)^
-                 ((uint64_t)block[6] <<  8)^
-                 ((uint64_t)block[7]);
-
-        //K_{-2}
-        uint64_t k2 =  ((uint64_t)key[0] << 56)^
-                       ((uint64_t)key[1] << 48)^
-                       ((uint64_t)key[2] << 40)^
-                       ((uint64_t)key[3] << 32)^
-                       ((uint64_t)key[4] << 24)^
-                       ((uint64_t)key[5] << 16)^
-                       ((uint64_t)key[6] <<  8)^
-                       ((uint64_t)key[7]);
-        //K_{-1}
-        uint64_t k1 =  ((uint64_t)key[ 8] << 56)^
-                       ((uint64_t)key[ 9] << 48)^
-                       ((uint64_t)key[10] << 40)^
-                       ((uint64_t)key[11] << 32)^
-                       ((uint64_t)key[12] << 24)^
-                       ((uint64_t)key[13] << 16)^
-                       ((uint64_t)key[14] <<  8)^
-                       ((uint64_t)key[15]);
-
-        key_shedule(k2, k1);
-    }
+//    template<typename BlockType, typename MasterKeyType>
+//    KHAZAD(const BlockType& block, const MasterKeyType& key) {
+//        state_ = ((uint64_t)block[0] << 56)^
+//                 ((uint64_t)block[1] << 48)^
+//                 ((uint64_t)block[2] << 40)^
+//                 ((uint64_t)block[3] << 32)^
+//                 ((uint64_t)block[4] << 24)^
+//                 ((uint64_t)block[5] << 16)^
+//                 ((uint64_t)block[6] <<  8)^
+//                 ((uint64_t)block[7]);
+//
+//        //K_{-2}
+//        uint64_t k2 =  ((uint64_t)key[0] << 56)^
+//                       ((uint64_t)key[1] << 48)^
+//                       ((uint64_t)key[2] << 40)^
+//                       ((uint64_t)key[3] << 32)^
+//                       ((uint64_t)key[4] << 24)^
+//                       ((uint64_t)key[5] << 16)^
+//                       ((uint64_t)key[6] <<  8)^
+//                       ((uint64_t)key[7]);
+//        //K_{-1}
+//        uint64_t k1 =  ((uint64_t)key[ 8] << 56)^
+//                       ((uint64_t)key[ 9] << 48)^
+//                       ((uint64_t)key[10] << 40)^
+//                       ((uint64_t)key[11] << 32)^
+//                       ((uint64_t)key[12] << 24)^
+//                       ((uint64_t)key[13] << 16)^
+//                       ((uint64_t)key[14] <<  8)^
+//                       ((uint64_t)key[15]);
+//
+//        key_shedule(k2, k1);
+//    }
 
     KHAZAD(uint64_t block, uint64_t k2, uint64_t k1): state_(block) {
         key_shedule(k2, k1);
@@ -614,9 +643,8 @@ public:
 
     uint64_t encrypt(uint64_t plaintext) {
         plaintext ^= ekeys_[0];
-        for(int r{1}; r < R;  ++r) {
+        for(int r{1}; r < R;  ++r)
             plaintext = T(plaintext) ^ ekeys_[r];
-        }
 
 //        plaintext = T(plaintext) ^ ekeys_[R];<-wrong
 
@@ -635,9 +663,8 @@ public:
 
     uint64_t encrypt() {
         state_ ^= ekeys_[0];
-        for(int r{1}; r < R;  ++r) {
+        for(int r{1}; r < R;  ++r)
             state_ = T(state_) ^ ekeys_[r];
-        }
 
 //        state_ = T(state_) ^ ekeys_[R];<-wrong
 //just s-box:
@@ -656,9 +683,8 @@ public:
 
     uint64_t decrypt() {
         state_ ^= ekeys_[R];
-        for(int r{1}; r < R;  ++r) {
+        for(int r{1}; r < R;  ++r)
             state_ = T(state_) ^ dkeys_[r];
-        }
 
         state_ =
                 (T0[(byte)(state_ >> 56)] & uint64_t(0xff00000000000000)) ^
@@ -677,6 +703,29 @@ public:
         return state_;
     }
 
+    //lsx api
+    uint8_t S(uint8_t byte) {
+        return Sbox_[byte];
+    }
+
+//    uint64_t L(uint64_t s) {
+//        uint8_t state[8];
+//        state[0] = (byte)(s >> 56);
+//        state[1] = (byte)(s >> 48);
+//        state[2] = (byte)(s >> 40);
+//        state[3] = (byte)(s >> 32);
+//        state[4] = (byte)(s >> 24);
+//        state[5] = (byte)(s >> 16);
+//        state[6] = (byte)(s >> 8);
+//        state[7] = (byte)(s >> 0);
+//
+//        for(int i{}; i < 8; ++i) {
+//            for(int j{}; j < 8; ++j) {
+//                state[i] ^= H[j]
+//            }
+//        }
+//    }
+
 
 private:
     void key_shedule(uint64_t k2, uint64_t k1) {
@@ -687,13 +736,12 @@ private:
         }
 
         dkeys_[0] = ekeys_[R];
-        for(byte r{1}; r < R; ++r) {
+        for(byte r{1}; r < R; ++r)
             dkeys_[r] = T0[(byte)T7[(ekeys_[R-r] >> 56) & 0xff]]^T1[(byte)T7[(ekeys_[R-r] >> 48) & 0xff]]^T2[(byte)T7[(ekeys_[R-r] >> 40) & 0xff]]^T3[(byte)T7[(ekeys_[R-r] >> 32) & 0xff]]^
                         T4[(byte)T7[(ekeys_[R-r] >> 24) & 0xff]]^T5[(byte)T7[(ekeys_[R-r] >> 16) & 0xff]]^T6[(byte)T7[(ekeys_[R-r] >>  8) & 0xff]]^T7[(byte)T7[(ekeys_[R-r] >>  0) & 0xff]];
-        }
         dkeys_[R] = ekeys_[0];
     }
-private:
+public:
     block state_;
     block ekeys_[R+1];
     block dkeys_[R+1];
