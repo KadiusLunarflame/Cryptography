@@ -10,8 +10,8 @@
 #include <iostream>
 #include <numeric>
 
-#include "TTables.hpp"
-#include "sbox.hpp"
+#include <TTables.hpp>
+#include <sbox.hpp>
 
 //class KHAZAD {
 //  public:

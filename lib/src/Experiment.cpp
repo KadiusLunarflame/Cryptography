@@ -1,14 +1,13 @@
-#include "Experiment.hpp"
-#include "randomizer.hpp"
+#include <Experiment.hpp>
 
 RKB4RExp::RKB4RExp(){
     uint64_t key1 = randomizer.rnd64();
-    std::cout << "TRY RECOVER KEY1 = " << std::hex << key1 << std::endl;
+    std::cout << "TRYING TO RECOVER KEY1 = " << std::hex << key1 << std::endl;
     uint64_t key2 = randomizer.rnd64();
 
     encryptor1 = khazad_reduced(key1, key2);
     encryptor2 = khazad_reduced(key1, key2^(randomizer.rnd_notnull()));
-    std::cout << "when KEY2 = " << std::hex << key2 << " and Key2' = " << encryptor2.ekeys_[1] << std::endl;
+    std::cout << "when KEY2 = " << std::hex << key2 << " and KEY2' = " << encryptor2.ekeys_[1] << std::endl;
 }
 
 void RKB4RExp::Run()  {
@@ -148,7 +147,7 @@ bool RKB4RExp::variants(const std::vector<std::vector<uint8_t>>& v, std::unorder
                                         map.insert(key);
 //                                        std::cout << "inserted" << std::endl;
                                     } else {
-                                        std::cout << "WTF" << std::endl;
+//                                        std::cout << "WTF" << std::endl;
                                         std::cout << std::setw(16) << std::setfill('0') << std::hex << key << " <- KEY HAS BEEN FOUND" << std::endl;
                                         return true;
                                     }

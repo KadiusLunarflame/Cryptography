@@ -5,5 +5,9 @@ set(CMAKE_CXX_STANDARD 20)
 
 include_directories(.)
 
-add_executable(Cryptography main.cpp
-        KHAZAD.hpp TTables.hpp sbox.hpp Experiment.hpp difference.hpp randomizer.hpp Experiment.cpp randomizer.cpp)
+add_subdirectory(${PROJECT_SOURCE_DIR}/src)
+add_subdirectory(${PROJECT_SOURCE_DIR}/lib/src)
+
+target_link_libraries(Cryptography lib)
+
+target_include_directories(Cryptography PUBLIC ${PROJECT_SOURCE_DIR}/lib/include)

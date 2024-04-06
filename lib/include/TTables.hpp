@@ -5,7 +5,7 @@
 #ifndef CRYPTOGRAPHY_TTABLES_HPP
 #define CRYPTOGRAPHY_TTABLES_HPP
 
-#include <auxiliary.hpp>
+#include "lib/include/auxiliary.hpp"
 
 const uint8_t H[8][8] =
         {
